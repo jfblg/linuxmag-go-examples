@@ -1,12 +1,12 @@
 package main
 
-import {
+import (
 	"bufio"
+	"io"
 	"os"
-	"io"	
-}
+)
 
-func cpChunks(srt, dst string, percent chan<- int) error {
+func cpChunks(src, dst string, percent chan<- int) error {
 
 	data := make([]byte, 4*1024*1024)
 
@@ -44,13 +44,14 @@ func cpChunks(srt, dst string, percent chan<- int) error {
 			return err
 		}
 
-		_, err := writer.Write(data)
+		_, err = writer.Write(data)
 		if err != nil {
 			return err
 		}
-		
+
 		percent <- int(int64(total) * int64(100) / fi.Size())
 
-		return nil
 	}
+	return nil
+
 }

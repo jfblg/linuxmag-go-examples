@@ -1,5 +1,16 @@
 package main
 
+import (
+	"bytes"
+	"errors"
+	"fmt"
+	"os/exec"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"time"
+)
+
 func driveWatch(done chan error) chan string {
 	seen := map[string]bool{}
 	init := true
@@ -12,7 +23,7 @@ func driveWatch(done chan error) chan string {
 				done <- err
 			}
 			for _, dpath := range dpaths {
-				if _, ok := seen[dpaht]; !ok {
+				if _, ok := seen[dpath]; !ok {
 					seen[dpath] = true
 					if !init {
 						drivech <- dpath

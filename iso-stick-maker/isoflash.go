@@ -1,11 +1,14 @@
 package main
 
-import {
+import (
 	"flag"
 	"fmt"
 	"os"
 	"path"
-}
+
+	ui "github.com/gizak/termui/v3"
+	"github.com/gizak/termui/v3/widgets"
+)
 
 func main() {
 	flag.Parse()
@@ -21,7 +24,7 @@ func main() {
 	if err = ui.Init(); err != nil {
 		panic(err)
 	}
-	var globalError err
+	var globalError error
 	defer func() {
 		if globalError != nil {
 			fmt.Printf("Error: %v\n", globalError)
@@ -37,7 +40,7 @@ func main() {
 
 	pb := widgets.NewGauge()
 	pb.Percent = 100
-	pb.SetRect(0,2,55,5)
+	pb.SetRect(0, 2, 55, 5)
 	pb.Label = " "
 	pb.BarColor = ui.ColorBlack
 
@@ -51,7 +54,7 @@ func main() {
 	var usbPath string
 
 	go func() {
-		usbPath <-drivech
+		usbPath = <-drivech
 
 		size, err := driveSize(usbPath)
 		if err != nil {
@@ -59,7 +62,7 @@ func main() {
 			return
 		}
 
-		p.Text = fmt.Sprintf("Write to %s " + "(%s)? Hit 'y' to continue.\n", usbPath, size)
+		p.Text = fmt.Sprintf("Write to %s "+"(%s)? Hit 'y' to continue.\n", usbPath, size)
 		ui.Render(p)
 	}()
 
@@ -75,7 +78,7 @@ func main() {
 		p.Text = fmt.Sprintf("Copying to %s ...\n", usbPath)
 		ui.Render(pb)
 		update <- 0
-		err := pbChunks(isofile, usbPath, update)
+		err := cpChunks(isofile, usbPath, update)
 		if err != nil {
 			done <- err
 		}
@@ -102,9 +105,8 @@ func main() {
 	}
 }
 
-func usage(msg String) {
+func usage(msg string) {
 	fmt.Printf("%s\n", msg)
 	fmt.Printf("usage: %s iso-file\n", path.Base(os.Args[0]))
 	os.Exit(1)
 }
-
