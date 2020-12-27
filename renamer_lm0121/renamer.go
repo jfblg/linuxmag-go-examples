@@ -32,7 +32,7 @@ func main() {
 	files := flag.Args()[1:]
 	modifier, err := mkmodifier(cmd)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Invalid command %s'n", cmd)
+		fmt.Fprintf(os.Stderr, "Invalid command %s\n", cmd)
 		usage()
 	}
 
